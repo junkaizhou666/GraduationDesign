@@ -1,0 +1,20 @@
+PODS:
+  - JXSegmentedView (1.4.1)
+  - SnapKit (5.7.1)
+
+DEPENDENCIES:
+  - JXSegmentedView
+  - SnapKit
+
+SPEC REPOS:
+  trunk:
+    - JXSegmentedView
+    - SnapKit
+
+SPEC CHECKSUMS:
+  JXSegmentedView: cd73555ce2134d1656db2cb383ba9c2f36fb5078
+  SnapKit: d612e99e678a2d3b95bf60b0705ed0a35c03484a
+
+PODFILE CHECKSUM: 03cd40fb861d3295d58118e1d4f6e62ad8c8187c
+
+COCOAPODS: 1.16.2

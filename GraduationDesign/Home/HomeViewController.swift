@@ -6,22 +6,24 @@
 //
 
 import UIKit
+import SnapKit
 
 class HomeViewController: UIViewController {
+    
     private var statusBarView: UIView!
     private var aboveCustomNavBar: CustomNavigationBar!
     private var lowerCustomNavBar: CustomNavigationBar!
-    private var imageView: ImageView!
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupStatusBar()
         setupAboveNavBar()
         setuplowerNavBar()
-        //setupImageView()
+        
+        showImagePageViewController()
     }
-
+    
     private func setupStatusBar() {
         statusBarView = UIView()
         statusBarView.backgroundColor = UIColor(named: "NavBar")
@@ -69,14 +71,19 @@ class HomeViewController: UIViewController {
         }
     }
     
-    private func setupImageView() {
-        imageView = ImageView()
-        view.addSubview(imageView)
+    private func showImagePageViewController() {
+        let imagePageVC = ImagePageViewController()
         
-        imageView.snp.makeConstraints { make in
+        addChild(imagePageVC)
+        view.addSubview(imagePageVC.view)
+        
+        imagePageVC.view.snp.makeConstraints { make in
             make.top.equalTo(lowerCustomNavBar.snp.bottom)
             make.left.right.equalToSuperview()
-            make.height.equalTo(600)
+            make.height.equalTo(120)
         }
+        imagePageVC.didMove(toParent: self)
     }
+
+
 }

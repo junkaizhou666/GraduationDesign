@@ -9,13 +9,21 @@ import UIKit
 
 struct HomeImage {
     let id: Int
-    let image: String
+    let image: UIImage?
 }
 
-class ImageModel {
-    let images = [HomeImage(id: 0, image: "image1"),
-                  HomeImage(id: 1, image: "image2"),
-                  HomeImage(id: 2, image: "image3"),
-                  HomeImage(id: 3, image: "image4"),
-                  HomeImage(id: 4, image: "image5")]
+class ImageUpModel {
+    let imagesUp = [HomeImage(id: 0, image: UIImage(named: "Home_Up_1")),
+                  HomeImage(id: 1, image: UIImage(named: "Home_Up_2")),
+                  HomeImage(id: 2, image: UIImage(named: "Home_Up_3")),
+                  HomeImage(id: 3, image: UIImage(named: "Home_Up_4")),
+                  HomeImage(id: 4, image: UIImage(named: "Home_Up_5"))]
 }
+
+//class ImageDownModel {
+//    let imagesDown = [
+//        HomeImage(id: 0, image: UIImage(named: "Home_Down_1")),
+//        HomeImage(id: 1, image: UIImage(named: "Home_Down_2")),
+//        HomeImage(id: 2, image: UIImage(named: "Home_Down_3"))
+//    ]
+//}

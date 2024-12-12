@@ -9,7 +9,7 @@ import JXSegmentedView
 
 class InformationContentBase: UIViewController, JXSegmentedListContainerViewListDelegate {
     
-    var tableView: SettingTableView!
+    var tableView: SettingMessageTableView!
     var seeMoreButton: UIButton!
     
     override func viewDidLoad() {
@@ -20,7 +20,7 @@ class InformationContentBase: UIViewController, JXSegmentedListContainerViewList
     }
     
     func setupTableView() {
-        tableView = SettingTableView(frame: CGRect.zero)
+        tableView = SettingMessageTableView(frame: CGRect.zero)
         view.addSubview(tableView)
         
         tableView.snp.makeConstraints { make in

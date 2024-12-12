@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import SnapKit
 
-class SettingCell: UITableViewCell {
+class SettingMessageCell: UITableViewCell {
     var titleLabel = UILabel()
     var dateLabel = UILabel()
     var mainView = UIView()

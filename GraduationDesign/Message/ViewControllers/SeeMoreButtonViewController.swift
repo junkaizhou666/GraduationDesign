@@ -8,7 +8,7 @@
 import UIKit
 
 class SeeMoreButtonViewController: UIViewController {
-    private var settingTableView: SettingTableView = SettingTableView()
+    private var settingTableView: SettingMessageTableView = SettingMessageTableView()
     private var customNavigationBar: CustomNavigationBar!
     
     override func viewDidLoad() {
@@ -41,7 +41,7 @@ extension SeeMoreButtonViewController: UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = settingTableView.tableView.dequeueReusableCell(withIdentifier: settingTableView.cellIdentifier, for: indexPath) as! SettingCell
+        let cell = settingTableView.tableView.dequeueReusableCell(withIdentifier: settingTableView.cellIdentifier, for: indexPath) as! SettingMessageCell
         let model = settingTableView.data[indexPath.row]
         cell.titleLabel.text = model.title
         cell.dateLabel.text = model.date

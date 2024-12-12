@@ -13,15 +13,21 @@ class HomeViewController: UIViewController {
     private var statusBarView: UIView!
     private var aboveCustomNavBar: CustomNavigationBar!
     private var lowerCustomNavBar: CustomNavigationBar!
-
+    private var imageUpPageVC: ImageUpPageViewController!
+    private var tableNavBar: TableNavBar!
+    private var imagesBottomPageVC: ImageBottomPageViewController!
+    private var comprehensiveTableView: SettingComprehensiveTableView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupStatusBar()
         setupAboveNavBar()
         setuplowerNavBar()
-        
-        showImagePageViewController()
+        showImageUpPageViewController()
+        setupTableNavBar()
+        showImageBottomPageViewController()
+        setupComprehensiveTableView()
     }
     
     private func setupStatusBar() {
@@ -71,19 +77,57 @@ class HomeViewController: UIViewController {
         }
     }
     
-    private func showImagePageViewController() {
-        let imagePageVC = ImagePageViewController()
+    private func showImageUpPageViewController() {
+        imageUpPageVC = ImageUpPageViewController()
         
-        addChild(imagePageVC)
-        view.addSubview(imagePageVC.view)
+        addChild(imageUpPageVC)
+        view.addSubview(imageUpPageVC.view)
         
-        imagePageVC.view.snp.makeConstraints { make in
+        imageUpPageVC.view.snp.makeConstraints { make in
             make.top.equalTo(lowerCustomNavBar.snp.bottom)
             make.left.right.equalToSuperview()
-            make.height.equalTo(120)
+            make.height.equalTo(110)
         }
-        imagePageVC.didMove(toParent: self)
+        imageUpPageVC.didMove(toParent: self)
     }
 
-
+    private func setupTableNavBar() {
+        tableNavBar = TableNavBar()
+        tableNavBar.setTitle("综合要闻")
+        view.addSubview(tableNavBar)
+        
+        tableNavBar.snp.makeConstraints { make in
+            make.top.equalTo(imageUpPageVC.view.snp.bottom)
+            make.left.right.equalToSuperview()
+            make.height.equalTo(40)
+        }
+    }
+    
+    private func showImageBottomPageViewController() {
+        imagesBottomPageVC = ImageBottomPageViewController()
+        
+        addChild(imagesBottomPageVC)
+        view.addSubview(imagesBottomPageVC.view)
+        
+        imagesBottomPageVC.view.snp.makeConstraints { make in
+            make.top.equalTo(tableNavBar.snp.bottom)
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
+            make.height.equalTo(210)
+        }
+    }
+    
+    private func setupComprehensiveTableView() {
+        comprehensiveTableView = SettingComprehensiveTableView(frame: CGRect.zero)
+        view.addSubview(comprehensiveTableView)
+        
+        comprehensiveTableView.snp.makeConstraints { make in
+            make.top.equalTo(imagesBottomPageVC.view.snp.bottom)
+            make.left.right.equalToSuperview()
+            make.height.equalTo(340)
+        }
+        
+        let model = NoticeModel()
+        comprehensiveTableView.setData(model.noticeModel)
+    }
 }

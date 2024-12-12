@@ -1,27 +1,29 @@
 //
-//  ImagePageViewController.swift
+//  ImageUpPageViewController.swift
 //  GraduationDesign
 //
-//  Created by 周俊凯 on 2024/12/10.
+//  Created by 周俊凯 on 2024/12/11.
 //
 
 import UIKit
 import SnapKit
 
-class ImagePageViewController: UIViewController {
+class ImageUpPageViewController: UIViewController {
     
     var pageControl: UIPageControl!
     var scrollView: UIScrollView!
     let model = ImageUpModel()
-    
+    var timer: Timer?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupScrollView()
         setupPageControl()
         setupSwipeGestures()
+        startTimer()
     }
-    
+
     func setupScrollView() {
         scrollView = UIScrollView()
         scrollView.delegate = self
@@ -34,7 +36,7 @@ class ImagePageViewController: UIViewController {
         
         scrollView.snp.makeConstraints { make in
             make.top.left.right.equalToSuperview()
-            make.height.equalTo(120)
+            make.height.equalTo(110)
         }
         
         for (index, homeImage) in model.imagesUp.enumerated() {
@@ -49,7 +51,7 @@ class ImagePageViewController: UIViewController {
             }
         }
         
-        scrollView.contentSize = CGSize(width: view.frame.width * CGFloat(model.imagesUp.count), height: 120)
+        scrollView.contentSize = CGSize(width: view.frame.width * CGFloat(model.imagesUp.count), height: 110)
     }
 
     func setupPageControl() {
@@ -68,14 +70,12 @@ class ImagePageViewController: UIViewController {
         pageControl.addTarget(self, action: #selector(pageChanged(_:)), for: .valueChanged)
     }
     
-    // 处理pageControl的切换
     @objc func pageChanged(_ sender: UIPageControl) {
         let page = pageControl.currentPage
         let offset = CGPoint(x: CGFloat(page) * view.frame.width, y: 0)
         scrollView.setContentOffset(offset, animated: true)
     }
     
-    // 设置左右滑动手势识别器
     func setupSwipeGestures() {
         let leftSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe(_:)))
         leftSwipeGesture.direction = .left
@@ -86,35 +86,52 @@ class ImagePageViewController: UIViewController {
         scrollView.addGestureRecognizer(rightSwipeGesture)
     }
     
-    // 处理左右滑动
     @objc func handleSwipe(_ gesture: UISwipeGestureRecognizer) {
         var currentPage = pageControl.currentPage
         
         if gesture.direction == .left {
-            // 向左滑动，切换到下一页
             currentPage = min(currentPage + 1, pageControl.numberOfPages - 1)
         } else if gesture.direction == .right {
-            // 向右滑动，切换到上一页
             currentPage = max(currentPage - 1, 0)
         }
         
-        // 更新pageControl
         pageControl.currentPage = currentPage
-        
-        // 滚动到对应的页面
         let offset = CGPoint(x: CGFloat(currentPage) * view.frame.width, y: 0)
         scrollView.setContentOffset(offset, animated: true)
     }
+    
+    func startTimer() {
+        timer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(autoScrollToNextPage), userInfo: nil, repeats: true)
+    }
+    
+    func stopTimer() {
+        timer?.invalidate()
+        timer = nil
+    }
+
+    @objc func autoScrollToNextPage() {
+        var nextPage = pageControl.currentPage + 1
+        
+        if nextPage >= model.imagesUp.count {
+            nextPage = 0 // 回到第一页
+        }
+        
+        pageControl.currentPage = nextPage
+        let offset = CGPoint(x: CGFloat(nextPage) * view.frame.width, y: 0)
+        scrollView.setContentOffset(offset, animated: true)
+    }
+
+    deinit {
+        stopTimer() // 确保定时器在控制器销毁时停止
+    }
 }
 
-extension ImagePageViewController: UIScrollViewDelegate {
-    // 滚动视图停止滚动后更新pageControl
+extension ImageUpPageViewController: UIScrollViewDelegate {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let page = Int(scrollView.contentOffset.x / scrollView.frame.size.width)
         pageControl.currentPage = page
     }
     
-    // 如果用户手动拖动，及时更新pageControl
     func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
         let page = Int(scrollView.contentOffset.x / scrollView.frame.size.width)
         pageControl.currentPage = page

@@ -8,13 +8,13 @@
 import UIKit
 import SnapKit
 
-class SettingTableView: UIView, UITableViewDelegate, UITableViewDataSource {
+class SettingMessageTableView: UIView {
     
     var tableView: UITableView!
     var data: [Model] = []
     
     var cellIdentifier: String {
-        return String(describing: SettingCell.self)
+        return String(describing: SettingMessageCell.self)
     }
     
     override init(frame: CGRect) {
@@ -31,7 +31,7 @@ class SettingTableView: UIView, UITableViewDelegate, UITableViewDataSource {
         tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(SettingCell.self, forCellReuseIdentifier: cellIdentifier)
+        tableView.register(SettingMessageCell.self, forCellReuseIdentifier: cellIdentifier)
         
         addSubview(tableView)
         tableView.snp.makeConstraints { make in
@@ -39,7 +39,9 @@ class SettingTableView: UIView, UITableViewDelegate, UITableViewDataSource {
             make.height.equalTo(600)
         }
     }
-    
+}
+
+extension SettingMessageTableView: UITableViewDelegate, UITableViewDataSource {
     // 设置数据源
     func setData(_ data: [Model]) {
         self.data = data
@@ -52,9 +54,12 @@ class SettingTableView: UIView, UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! SettingCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! SettingMessageCell
         let model = data[indexPath.row]
         cell.titleLabel.text = model.title
+//        let maxTitleWidth: CGFloat = tableView.frame.width * 0.5
+//        cell.titleLabel.text = model.title.truncated(toFitWidth: maxTitleWidth, font: cell.titleLabel.font)
+
         cell.dateLabel.text = model.date
         return cell
     }

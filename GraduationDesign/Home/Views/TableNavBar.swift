@@ -14,6 +14,8 @@ class TableNavBar: UIView {
     private var seperatorLine = UIView()
     private var mainView = UIView()
     
+    var moreButtonAction: (() -> Void)?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -52,7 +54,7 @@ class TableNavBar: UIView {
         
         button.setTitle("更多", for: .normal)
         button.setTitleColor(.navBar, for: .normal)
-        //button.addTarget(self, action: #selector(didTapSeeMore()), for: .touchUpInside)
+        button.addTarget(self, action: #selector(moreButtonTapped), for: .touchUpInside)
         mainView.addSubview(button)
         button.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(-6)
@@ -64,7 +66,8 @@ class TableNavBar: UIView {
         label.text = title
     }
     
-    @objc func didTapSeeMore() {
-        print("更多按钮点击")
+    @objc func moreButtonTapped() {
+        moreButtonAction?()
     }
+
 }

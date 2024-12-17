@@ -12,22 +12,56 @@ class HomeViewController: UIViewController {
     
     private var statusBarView: UIView!
     private var aboveCustomNavBar: CustomNavigationBar!
+    private var scrollView: UIScrollView!
     private var lowerCustomNavBar: CustomNavigationBar!
     private var imageUpPageVC: ImageUpPageViewController!
-    private var tableNavBar: TableNavBar!
+    private var cphsNavBar: TableNavBar!
     private var imagesBottomPageVC: ImageBottomPageViewController!
     private var comprehensiveTableView: SettingComprehensiveTableView!
+    private var noticeNavBar: TableNavBar!
+    private var noticeTableView: SettingNoticeTableIView!
+    private var mediaNavBar: TableNavBar!
+    private var mediaTableView: SettingNoticeTableIView!
+    private var scienceNavBar: TableNavBar!
+    private var scienceTableView: SettingScienceTableView!
+    private var academicNavBar: TableNavBar!
+    private var academicTableView: SettingTalentTableView!
+    private var talentNavBar: TableNavBar!
+    private var talentTableView: SettingTalentTableView!
+    private var examinationNavBar: TableNavBar!
+    private var examinationCollectionVC: ExaminationViewController!
+    private var allMediaNavBar: TableNavBar!
+    private var allMediaTableView: SettingAllMediaTableView!
+    private var zzuliNavBar: TableNavBar!
+    private var zzuliCollectionVC: ZZULIViewController!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupStatusBar()
         setupAboveNavBar()
+        setupScrollView()
         setuplowerNavBar()
         showImageUpPageViewController()
         setupTableNavBar()
         showImageBottomPageViewController()
         setupComprehensiveTableView()
+        setupNoticeNavBar()
+        setupNoticeTableView()
+        setupMediaNavBar()
+        setupMediaTableView()
+        setupScienceNavBar()
+        setupScienceTableView()
+        setupAcademicNavBar()
+        setupAcademicTableView()
+        setupTalentNavBar()
+        setupTalentTableView()
+        setupExaminationNavBar()
+        setupExaminationCollectionVC()
+        setupAllMediaNavBar()
+        setupAllMediaTableView()
+        setupZZULINavBar()
+        setupZZULIConllectionVC()
     }
     
     private func setupStatusBar() {
@@ -58,6 +92,20 @@ class HomeViewController: UIViewController {
         }
     }
     
+    private func setupScrollView() {
+        scrollView = UIScrollView()
+        scrollView.backgroundColor = .white
+        view.addSubview(scrollView)
+        
+        scrollView.snp.makeConstraints { make in
+            make.top.equalTo(aboveCustomNavBar.snp.bottom)
+            make.left.right.bottom.equalToSuperview()
+        }
+
+        scrollView.contentSize = CGSize(width: view.bounds.width, height: 1000000)
+        scrollView.layoutIfNeeded()
+    }
+
     private func setuplowerNavBar() {
         lowerCustomNavBar = CustomNavigationBar()
         lowerCustomNavBar.navigationBar.barTintColor = .white
@@ -69,65 +117,294 @@ class HomeViewController: UIViewController {
         lowerCustomNavBar.setRightButtonTitle("更多", titleColor: .black) {
             print("更多点击")
         }
-        view.addSubview(lowerCustomNavBar)
+        scrollView.addSubview(lowerCustomNavBar)
         
         lowerCustomNavBar.snp.makeConstraints { make in
-            make.top.equalTo(aboveCustomNavBar.snp.bottom)
+            make.top.equalTo(scrollView.snp.top)
             make.left.right.equalToSuperview()
         }
     }
-    
+
     private func showImageUpPageViewController() {
         imageUpPageVC = ImageUpPageViewController()
         
         addChild(imageUpPageVC)
-        view.addSubview(imageUpPageVC.view)
+        scrollView.addSubview(imageUpPageVC.view)
         
         imageUpPageVC.view.snp.makeConstraints { make in
             make.top.equalTo(lowerCustomNavBar.snp.bottom)
-            make.left.right.equalToSuperview()
+            make.left.equalTo(scrollView.snp.left)
+            make.right.equalTo(scrollView.snp.right)
+            make.width.equalTo(scrollView.snp.width)
             make.height.equalTo(110)
         }
         imageUpPageVC.didMove(toParent: self)
     }
 
     private func setupTableNavBar() {
-        tableNavBar = TableNavBar()
-        tableNavBar.setTitle("综合要闻")
-        view.addSubview(tableNavBar)
+        cphsNavBar = TableNavBar()
+        cphsNavBar.setTitle("综合要闻")
+        scrollView.addSubview(cphsNavBar)
         
-        tableNavBar.snp.makeConstraints { make in
+        cphsNavBar.snp.makeConstraints { make in
             make.top.equalTo(imageUpPageVC.view.snp.bottom)
+            make.left.right.equalToSuperview()
+            make.height.equalTo(40)
+        }
+        
+        cphsNavBar.moreButtonAction = {
+            print("综合要闻更多按钮被点击")
+        }
+    }
+
+    private func showImageBottomPageViewController() {
+        imagesBottomPageVC = ImageBottomPageViewController()
+        
+        addChild(imagesBottomPageVC)
+        scrollView.addSubview(imagesBottomPageVC.view)
+        
+        imagesBottomPageVC.view.snp.makeConstraints { make in
+            make.top.equalTo(cphsNavBar.snp.bottom)
+            make.left.equalTo(scrollView.snp.left)
+            make.right.equalTo(scrollView.snp.right)
+            make.width.equalTo(scrollView.snp.width)
+            make.height.equalTo(210)
+        }
+    }
+
+    private func setupComprehensiveTableView() {
+        comprehensiveTableView = SettingComprehensiveTableView(frame: CGRect.zero)
+        scrollView.addSubview(comprehensiveTableView)
+        
+        comprehensiveTableView.snp.makeConstraints { make in
+            make.top.equalTo(imagesBottomPageVC.view.snp.bottom)
+            make.left.right.equalToSuperview()
+            make.height.equalTo(220)
+        }
+        
+        let model = NoticeModel()
+        comprehensiveTableView.setData(model.noticeModel)
+    }
+
+    private func setupNoticeNavBar() {
+        noticeNavBar = TableNavBar()
+        noticeNavBar.setTitle("通知公告")
+        scrollView.addSubview(noticeNavBar)
+        
+        noticeNavBar.snp.makeConstraints { make in
+            make.top.equalTo(comprehensiveTableView.snp.bottom)
+            make.left.right.equalToSuperview()
+            make.height.equalTo(40)
+        }
+        
+        noticeNavBar.moreButtonAction = {
+            print("通知公告更多按钮被点击")
+        }
+    }
+
+    private func setupNoticeTableView() {
+        noticeTableView = SettingNoticeTableIView(frame: CGRect.zero)
+        scrollView.addSubview(noticeTableView)
+        
+        noticeTableView.snp.makeConstraints { make in
+            make.top.equalTo(noticeNavBar.snp.bottom)
+            make.left.right.equalToSuperview()
+            make.height.equalTo(200)
+        }
+        
+        let model = NoticeModel()
+        noticeTableView.setData(model.noticeModel)
+    }
+    
+    private func setupMediaNavBar() {
+        mediaNavBar = TableNavBar()
+        mediaNavBar.setTitle("媒体轻大")
+        scrollView.addSubview(mediaNavBar)
+        
+        mediaNavBar.snp.makeConstraints { make in
+            make.top.equalTo(noticeTableView.snp.bottom)
+            make.left.right.equalToSuperview()
+            make.height.equalTo(40)
+        }
+        
+        mediaNavBar.moreButtonAction = {
+            print("媒体轻大更多按钮被点击")
+        }
+    }
+    
+    private func setupMediaTableView() {
+        mediaTableView = SettingNoticeTableIView(frame: CGRect.zero)
+        scrollView.addSubview(mediaTableView)
+        
+        mediaTableView.snp.makeConstraints { make in
+            make.top.equalTo(mediaNavBar.snp.bottom)
+            make.left.right.equalToSuperview()
+            make.height.equalTo(200)
+        }
+        
+        let model = NoticeModel()
+        mediaTableView.setData(model.noticeModel)
+    }
+    
+    private func setupScienceNavBar() {
+        scienceNavBar = TableNavBar()
+        scienceNavBar.setTitle("科学研究")
+        scrollView.addSubview(scienceNavBar)
+        
+        scienceNavBar.snp.makeConstraints { make in
+            make.top.equalTo(mediaTableView.snp.bottom)
+            make.left.right.equalToSuperview()
+            make.height.equalTo(40)
+        }
+        
+        scienceNavBar.moreButtonAction = {
+            print("科学研究更多按钮被点击")
+        }
+    }
+    
+    private func setupScienceTableView() {
+        scienceTableView = SettingScienceTableView(frame: CGRect.zero)
+        scrollView.addSubview(scienceTableView)
+        
+        scienceTableView.snp.makeConstraints { make in
+            make.top.equalTo(scienceNavBar.snp.bottom)
+            make.left.right.equalToSuperview()
+            make.height.equalTo(2100)
+        }
+        
+        let model = ScienceModel()
+        scienceTableView.setData(model.scienceModel)
+    }
+    
+    private func setupAcademicNavBar() {
+        academicNavBar = TableNavBar()
+        academicNavBar.backgroundColor = UIColor(named: "TalentTableBG")
+        academicNavBar.setTitle("学术信息")
+        scrollView.addSubview(academicNavBar)
+        
+        academicNavBar.snp.makeConstraints { make in
+            make.top.equalTo(scienceTableView.snp.bottom).offset(10)
             make.left.right.equalToSuperview()
             make.height.equalTo(40)
         }
     }
     
-    private func showImageBottomPageViewController() {
-        imagesBottomPageVC = ImageBottomPageViewController()
-        
-        addChild(imagesBottomPageVC)
-        view.addSubview(imagesBottomPageVC.view)
-        
-        imagesBottomPageVC.view.snp.makeConstraints { make in
-            make.top.equalTo(tableNavBar.snp.bottom)
-            make.left.equalToSuperview()
-            make.right.equalToSuperview()
-            make.height.equalTo(210)
-        }
-    }
-    
-    private func setupComprehensiveTableView() {
-        comprehensiveTableView = SettingComprehensiveTableView(frame: CGRect.zero)
-        view.addSubview(comprehensiveTableView)
-        
-        comprehensiveTableView.snp.makeConstraints { make in
-            make.top.equalTo(imagesBottomPageVC.view.snp.bottom)
+    private func setupAcademicTableView() {
+        academicTableView = SettingTalentTableView(frame: CGRect.zero)
+        scrollView.addSubview(academicTableView)
+
+        academicTableView.snp.makeConstraints { make in
+            make.top.equalTo(academicNavBar.snp.bottom)
             make.left.right.equalToSuperview()
-            make.height.equalTo(340)
+            make.height.equalTo(275)
         }
         
         let model = NoticeModel()
-        comprehensiveTableView.setData(model.noticeModel)
+        academicTableView.setData(model.noticeModel)
+    }
+    
+    private func setupTalentNavBar() {
+        talentNavBar = TableNavBar()
+        talentNavBar.backgroundColor = UIColor(named: "TalentTableBG")
+        talentNavBar.setTitle("人才培养")
+        scrollView.addSubview(talentNavBar)
+        
+        talentNavBar.snp.makeConstraints { make in
+            make.top.equalTo(academicTableView.snp.bottom)
+            make.left.right.equalToSuperview()
+            make.height.equalTo(40)
+        }
+    }
+    
+    private func setupTalentTableView() {
+        talentTableView = SettingTalentTableView(frame: CGRect.zero)
+        scrollView.addSubview(talentTableView)
+        
+        talentTableView.snp.makeConstraints { make in
+            make.top.equalTo(talentNavBar.snp.bottom)
+            make.left.right.equalToSuperview()
+            make.height.equalTo(275)
+        }
+        
+        let model = NoticeModel()
+        talentTableView.setData(model.noticeModel)
+    }
+    
+    private func setupExaminationNavBar() {
+        examinationNavBar = TableNavBar()
+        examinationNavBar.backgroundColor = UIColor(named: "TalentTableBG")
+        examinationNavBar.setTitle("报考轻大")
+        scrollView.addSubview(examinationNavBar)
+        
+        examinationNavBar.snp.makeConstraints { make in
+            make.top.equalTo(talentTableView.snp.bottom)
+            make.left.right.equalToSuperview()
+            make.height.equalTo(40)
+        }
+    }
+    
+    private func setupExaminationCollectionVC() {
+        examinationCollectionVC = ExaminationViewController()
+        addChild(examinationCollectionVC)
+        scrollView.addSubview(examinationCollectionVC.view)
+        
+        examinationCollectionVC.view.snp.makeConstraints { make in
+            make.top.equalTo(examinationNavBar.snp.bottom)
+            make.left.right.equalToSuperview()
+            make.height.equalTo(400)
+        }
+        examinationCollectionVC.didMove(toParent: self)
+    }
+    
+    private func setupAllMediaNavBar() {
+        allMediaNavBar = TableNavBar()
+        allMediaNavBar.setTitle("全媒轻大")
+        scrollView.addSubview(allMediaNavBar)
+        
+        allMediaNavBar.snp.makeConstraints { make in
+            make.top.equalTo(examinationCollectionVC.view.snp.bottom).offset(5)
+            make.left.right.equalToSuperview()
+            make.height.equalTo(40)
+        }
+    }
+    
+    private func setupAllMediaTableView() {
+        allMediaTableView = SettingAllMediaTableView(frame: CGRect.zero)
+        scrollView.addSubview(allMediaTableView)
+        
+        allMediaTableView.snp.makeConstraints { make in
+            make.top.equalTo(allMediaNavBar.snp.bottom)
+            make.left.right.equalToSuperview().inset(10)
+            make.height.equalTo(1095)
+        }
+        
+        let model = AllMediaModel()
+        allMediaTableView.setData(model.allMediaModel)
+    }
+    
+    private func setupZZULINavBar() {
+        zzuliNavBar = TableNavBar()
+        zzuliNavBar.setTitle("轻大专题")
+        scrollView.addSubview(zzuliNavBar)
+        
+        zzuliNavBar.snp.makeConstraints { make in
+            make.top.equalTo(allMediaTableView.snp.bottom).offset(5)
+            make.left.right.equalToSuperview()
+            make.height.equalTo(40)
+        }
+    }
+    
+    private func setupZZULIConllectionVC() {
+        zzuliCollectionVC = ZZULIViewController()
+        addChild(zzuliCollectionVC)
+        scrollView.addSubview(zzuliCollectionVC.view)
+        
+        zzuliCollectionVC.view.snp.makeConstraints { make in
+            make.top.equalTo(zzuliNavBar.snp.bottom)
+            make.left.right.equalToSuperview()
+            make.height.equalTo(200)
+            make.bottom.equalTo(scrollView.snp.bottom)
+        }
+        zzuliCollectionVC.didMove(toParent: self)
     }
 }

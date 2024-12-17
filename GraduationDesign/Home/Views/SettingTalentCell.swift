@@ -1,14 +1,14 @@
 //
-//  SettingComprehensiveCell.swift
+//  SettingTalentCell.swift
 //  GraduationDesign
 //
-//  Created by 周俊凯 on 2024/12/11.
+//  Created by 周俊凯 on 2024/12/17.
 //
 
 import UIKit
 import SnapKit
 
-class SettingComprehensiveCell: UITableViewCell {
+class SettingTalentCell: UITableViewCell {
     var titleLabel = UILabel()
     var dateLabel = UILabel()
     var mainView = UIView()
@@ -23,6 +23,8 @@ class SettingComprehensiveCell: UITableViewCell {
     }
     
     private func setupSubViews() {
+        contentView.backgroundColor = UIColor(named: "TalentTableBG")
+        mainView.backgroundColor = UIColor(named: "TalentTableBG")
         contentView.addSubview(mainView)
         
         titleLabel.translatesAutoresizingMaskIntoConstraints = false

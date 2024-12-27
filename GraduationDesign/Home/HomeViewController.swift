@@ -13,9 +13,9 @@ class HomeViewController: UIViewController {
     private var statusBarView: UIView!
     private var aboveCustomNavBar: CustomNavigationBar!
     private var scrollView: UIScrollView!
-    private var homeNavButtonVC: HomeNavButtonVC!
-    private var navDropdownMenuVC: DropdownMenuViewController!
-    private var imageUpPageVC: ImageUpPageViewController!
+    private var homeNavButtonView: HomeNavButtonView!
+    private var navDropdownMenuView: NavDropdownMenuView!
+    var imageUpPageVC: ImageUpPageViewController!
     private var cphsNavBar: TableNavBar!
     private var imagesBottomPageVC: ImageBottomPageViewController!
     private var comprehensiveTableView: SettingComprehensiveTableView!
@@ -42,7 +42,7 @@ class HomeViewController: UIViewController {
         setupStatusBar()
         setupAboveNavBar()
         setupScrollView()
-        setupHomeNavBauttonVC()
+        setupHomeNavButtonView()
         showImageUpPageViewController()
         setupTableNavBar()
         showImageBottomPageViewController()
@@ -62,28 +62,13 @@ class HomeViewController: UIViewController {
         setupAllMediaNavBar()
         setupAllMediaTableView()
         setupZZULINavBar()
-        setupZZULIConllectionVC()
-        
+        setupZZULICollectionVC()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        // 从 UserDefaults 中读取之前保存的状态
-        if let savedMenuVisible = UserDefaults.standard.value(forKey: "isDropdownMenuVisible") as? Bool {
-            isDropdownMenuVisible = savedMenuVisible
-        }
-
-        // 如果菜单已经存在且没有显示，重新加载菜单并显示
-        if didTapBackButton {
-            // 使用 viewDidAppear 来确保视图已加载到窗口中
-            DispatchQueue.main.async {
-                self.handleNavButtonTapped()  // 调用展示菜单的逻辑
-            }
-            didTapBackButton = false // 重置状态
-        } else {
-            print("没有点击按钮")
-        }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        scrollView.layoutIfNeeded() // 触发布局刷新
+        print("scrollView.contentSize: \(scrollView.contentSize)")
     }
     
     private func setupStatusBar() {
@@ -118,6 +103,8 @@ class HomeViewController: UIViewController {
     private func setupScrollView() {
         scrollView = UIScrollView()
         scrollView.isUserInteractionEnabled = true
+        scrollView.isScrollEnabled = true
+        scrollView.alwaysBounceVertical = true
         scrollView.backgroundColor = .white
         view.addSubview(scrollView)
         
@@ -125,40 +112,29 @@ class HomeViewController: UIViewController {
             make.top.equalTo(aboveCustomNavBar.snp.bottom)
             make.left.right.bottom.equalToSuperview()
         }
-        
-        scrollView.contentSize = CGSize(width: view.bounds.width, height: 1000000)
-        scrollView.layoutIfNeeded()
     }
     
-    private func setupHomeNavBauttonVC() {
-        homeNavButtonVC = HomeNavButtonVC()
-        addChild(homeNavButtonVC)
-        scrollView.addSubview(homeNavButtonVC.view)
-        
-        homeNavButtonVC.view.snp.makeConstraints { make in
-            make.top.equalTo(scrollView.snp.top).offset(-14)
-            make.left.right.width.equalToSuperview()
+    private func setupHomeNavButtonView() {
+        homeNavButtonView = HomeNavButtonView()
+        homeNavButtonView.onButtonTapped = { [weak self] in
+            self?.didTapHomeNavButton()
+        }
+        scrollView.addSubview(homeNavButtonView!)
+        homeNavButtonView!.snp.makeConstraints { make in
+            make.top.equalTo(scrollView.snp.top)
+            make.left.right.equalToSuperview()
             make.height.equalTo(40)
         }
-        homeNavButtonVC.didMove(toParent: self)
-        
-        // 设置闭包处理按钮点击事件
-        homeNavButtonVC.onNavButtonTapped = { [weak self] in
-            self?.handleNavButtonTapped()
-        }
     }
-    
+
     private func showImageUpPageViewController() {
         imageUpPageVC = ImageUpPageViewController()
-        
         addChild(imageUpPageVC)
         scrollView.addSubview(imageUpPageVC.view)
         
         imageUpPageVC.view.snp.makeConstraints { make in
-            make.top.equalTo(homeNavButtonVC.view.snp.bottom)
-            make.left.equalTo(view.snp.left)
-            make.right.equalTo(view.snp.right)
-            make.width.equalTo(view.snp.width)
+            make.top.equalTo(homeNavButtonView!.snp.bottom)
+            make.left.right.width.equalToSuperview()
             make.height.equalTo(110)
         }
         imageUpPageVC.didMove(toParent: self)
@@ -417,7 +393,7 @@ class HomeViewController: UIViewController {
         }
     }
     
-    private func setupZZULIConllectionVC() {
+    private func setupZZULICollectionVC() {
         zzuliCollectionVC = ZZULIViewController()
         addChild(zzuliCollectionVC)
         scrollView.addSubview(zzuliCollectionVC.view)
@@ -431,125 +407,40 @@ class HomeViewController: UIViewController {
         zzuliCollectionVC.didMove(toParent: self)
     }
     
-    private var isDropdownMenuVisible = false
-
-    private func handleNavButtonTapped() {
-        let menuHeight: CGFloat = 450  // 菜单的高度
-
-        // 检查 view 是否已经在窗口中
-        guard self.view.window != nil else {
-            return
-        }
-        
-        if isDropdownMenuVisible {
-            // 隐藏菜单
-            navDropdownMenuVC?.reloadMenu()
-            UIView.animate(withDuration: 0.3, animations: {
-                self.navDropdownMenuVC?.view.alpha = 0
-            }) { _ in
-                self.navDropdownMenuVC?.view.removeFromSuperview()
-                self.navDropdownMenuVC = nil // 清除对旧视图控制器的引用
-                self.isDropdownMenuVisible = false
-                
-                // 更新视图高度，恢复布局
-                UIView.animate(withDuration: 0.3) {
-                    self.imageUpPageVC.view.snp.updateConstraints { make in
-                        make.top.equalTo(self.homeNavButtonVC.view.snp.bottom)
-                    }
-                    self.view.layoutIfNeeded()
-                }
+    private var isNavTableViewVisible = false
+    private var navMenuModel = NavDropdownMenuModel().navModel
+    
+    private func didTapHomeNavButton() {
+        if isNavTableViewVisible {
+            navDropdownMenuView.removeFromSuperview()
+            navDropdownMenuView = nil
+            isNavTableViewVisible = false
+            
+            imageUpPageVC.view.snp.remakeConstraints { make in
+                make.top.equalTo(homeNavButtonView!.snp.bottom)
+                make.left.right.width.equalToSuperview()
+                make.height.equalTo(110)
             }
         } else {
-            let menuVC = DropdownMenuViewController()
-
-            let navModel = NavDropdownMenuModel()
-            menuVC.navDropdownMenuModel = navModel.navModel
-            
-            // 设置点击事件
-            menuVC.onItemSelected = { [weak self] selectedItem in
+            if navDropdownMenuView == nil {
+                navDropdownMenuView = NavDropdownMenuView(data: navMenuModel)
+                scrollView.addSubview(navDropdownMenuView!)
                 
-                // 隐藏菜单
-                self?.navDropdownMenuVC?.view.removeFromSuperview()
-                self?.navDropdownMenuVC = nil
-                self?.isDropdownMenuVisible = false
-                
-                // 根据选项跳转
-                self?.navigateToPage(id: selectedItem.id, title: selectedItem.title)
-            }
-            
-            // 添加菜单到父视图
-            self.addChild(menuVC)
-            guard self.view.window != nil else {
-                return
-            }
-            view.addSubview(menuVC.view)
-            
-            // 强制更新视图层级，再进行布局
-            self.view.layoutIfNeeded()
-            
-            // 设置约束
-            menuVC.view.snp.makeConstraints { make in
-                make.top.equalTo(homeNavButtonVC.view.snp.bottom)
-                make.left.right.equalToSuperview()
-                make.height.equalTo(menuHeight)
-            }
-            
-            // 显示菜单动画
-            menuVC.view.alpha = 0
-            UIView.animate(withDuration: 0.3) {
-                menuVC.view.alpha = 1
-            }
-            
-            // 保存菜单视图控制器
-            navDropdownMenuVC = menuVC
-            self.isDropdownMenuVisible = true
-            
-            // 在数据加载后，刷新菜单
-            menuVC.reloadMenu()
-            
-            // 更新页面布局
-            UIView.animate(withDuration: 0.3) { [self] in
-                self.imageUpPageVC.view.snp.updateConstraints { make in
-                    make.top.equalTo(homeNavButtonVC.view.snp.bottom).offset(menuHeight)
+                navDropdownMenuView?.snp.makeConstraints { make in
+                    make.top.equalTo(homeNavButtonView!.snp.bottom)
+                    make.left.right.width.equalToSuperview()
+                    make.height.equalTo(400)
                 }
-                self.view.layoutIfNeeded()
+                
+                imageUpPageVC.view.snp.remakeConstraints { make in
+                    make.top.equalTo(navDropdownMenuView!.snp.bottom)
+                    make.left.right.width.equalToSuperview()
+                    make.height.equalTo(110)
+                }
             }
+            isNavTableViewVisible = true
         }
-        // 调用子控制器的菜单切换方法
     }
     
-    private var didTapBackButton = false
     
-    private func navigateToPage(id: Int, title: String) {
-        let detailVC = UIViewController()
-        detailVC.view.backgroundColor = .white
-        detailVC.title = title
-
-        // 根据id来决定具体的页面或内容
-        switch id {
-        case 0:
-            detailVC.view.backgroundColor = .blue
-        case 1:
-            detailVC.view.backgroundColor = .green
-        case 2:
-            detailVC.view.backgroundColor = .yellow
-        case 3:
-            detailVC.view.backgroundColor = .red
-        default:
-            detailVC.view.backgroundColor = .white
-        }
-        
-        // 设置自定义返回按钮
-        let backButton = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(handleBackButton))
-        detailVC.navigationItem.leftBarButtonItem = backButton
-        
-        navigationController?.pushViewController(detailVC, animated: true)
-    }
-
-    @objc func handleBackButton() {
-
-        didTapBackButton = true
-        navigationController?.popViewController(animated: true)
-    }
-
 }

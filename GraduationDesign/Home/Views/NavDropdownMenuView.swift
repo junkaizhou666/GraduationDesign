@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import WebKit
 
 class NavDropdownMenuView: UIView{
     private var tableView: UITableView!
@@ -129,25 +130,25 @@ extension NavDropdownMenuView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func navigateToDetailPage(id: Int, title: String) {
-        let detailVC = UIViewController()
-        detailVC.view.backgroundColor = .white
-        detailVC.title = title
+        let jumpVC = JumpToViewController()
+        jumpVC.title = title
         
         switch id {
         case 0:
-            detailVC.view.backgroundColor = .blue
+            jumpVC.title = "郑州轻工业大学欢迎您"
+            jumpVC.urlString = "https://www.zzuli.edu.cn"
         case 1:
-            detailVC.view.backgroundColor = .green
+            jumpVC.urlString = "https://www.zzuli.edu.cn/159/list.htm"
         case 2:
-            detailVC.view.backgroundColor = .yellow
+            jumpVC.urlString = "https://www.zzuli.edu.cn/zzjgx202211csy/list.htm"
         case 3:
-            detailVC.view.backgroundColor = .red
+            jumpVC.urlString = "https://www.zzuli.edu.cn/269/list.htm"
         default:
-            detailVC.view.backgroundColor = .white
+            jumpVC.urlString = "https://www.zzuli.edu.cn/275/list.htm"
         }
         
         if let parentVC = self.parentViewController() {
-            parentVC.navigationController?.pushViewController(detailVC, animated: true)
+            parentVC.navigationController?.pushViewController(jumpVC, animated: true)
         }
     }
     

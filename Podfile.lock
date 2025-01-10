@@ -1,9 +1,11 @@
 PODS:
   - JXSegmentedView (1.4.1)
+  - LookinServer (1.0.0)
   - SnapKit (5.7.1)
 
 DEPENDENCIES:
   - JXSegmentedView
+  - LookinServer (from `https://gitee.com/chuansong16/LookinServer.git`)
   - SnapKit
 
 SPEC REPOS:
@@ -11,10 +13,20 @@ SPEC REPOS:
     - JXSegmentedView
     - SnapKit
 
+EXTERNAL SOURCES:
+  LookinServer:
+    :git: https://gitee.com/chuansong16/LookinServer.git
+
+CHECKOUT OPTIONS:
+  LookinServer:
+    :commit: df5580956a96ffb5acca439dc81af8afea763f8e
+    :git: https://gitee.com/chuansong16/LookinServer.git
+
 SPEC CHECKSUMS:
   JXSegmentedView: cd73555ce2134d1656db2cb383ba9c2f36fb5078
+  LookinServer: 0002891cd3cec5e082a910e897dfe71b4f06b89e
   SnapKit: d612e99e678a2d3b95bf60b0705ed0a35c03484a
 
-PODFILE CHECKSUM: 03cd40fb861d3295d58118e1d4f6e62ad8c8187c
+PODFILE CHECKSUM: 3398809a47e4dd8a4e27e9dd5c850349ee41e176
 
 COCOAPODS: 1.16.2

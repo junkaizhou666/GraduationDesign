@@ -64,25 +64,24 @@ extension SchoolDropdownMenuView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func navigateToDetailPage(id: Int, title: String) {
-        let detailVC = UIViewController()
-        detailVC.view.backgroundColor = .white
-        detailVC.title = title
+        let jumpVC = JumpToViewController()
+        jumpVC.title = title
         
         switch id {
         case 0:
-            detailVC.view.backgroundColor = .blue
+            jumpVC.urlString = "https://www.zzuli.edu.cn/159/list.htm"
         case 1:
-            detailVC.view.backgroundColor = .green
+            jumpVC.urlString = "https://www.zzuli.edu.cn/xxzc/list.htm"
         case 2:
-            detailVC.view.backgroundColor = .yellow
+            jumpVC.urlString = "https://www.zzuli.edu.cn/161/list.htm"
         case 3:
-            detailVC.view.backgroundColor = .red
+            jumpVC.urlString = "https://www.zzuli.edu.cn/xfjfxf/list.htm"
         default:
-            detailVC.view.backgroundColor = .white
+            jumpVC.urlString = "https://www.zzuli.edu.cn/xg/list.htm"
         }
         
         if let parentVC = self.parentViewController() {
-            parentVC.navigationController?.pushViewController(detailVC, animated: true)
+            parentVC.navigationController?.pushViewController(jumpVC, animated: true)
         }
     }
     

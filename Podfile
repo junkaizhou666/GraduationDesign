@@ -8,5 +8,4 @@ target 'GraduationDesign' do
   # Pods for GraduationDesign
   pod 'SnapKit'
   pod 'JXSegmentedView'
-  pod 'LookinServer', :git => 'https://gitee.com/chuansong16/LookinServer.git', :configurations => ['Debug']
 end

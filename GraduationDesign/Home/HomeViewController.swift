@@ -152,9 +152,7 @@ class HomeViewController: UIViewController {
         }
         
         cphsNavBar.moreButtonAction = {
-            let jumpToVC = JumpToViewController()
-            jumpToVC.urlString = "http://www.zzuli.edu.cn/_t2404/280/list.htm"
-            self.navigationController?.pushViewController(jumpToVC, animated: true)
+            print("综合要闻更多按钮被点击")
         }
     }
     
@@ -199,9 +197,7 @@ class HomeViewController: UIViewController {
         }
         
         noticeNavBar.moreButtonAction = {
-            let jumpToVC = JumpToViewController()
-            jumpToVC.urlString = "http://www.zzuli.edu.cn/_t2404/303/list.htm"
-            self.navigationController?.pushViewController(jumpToVC, animated: true)
+            print("通知公告更多按钮被点击")
         }
     }
     
@@ -231,9 +227,7 @@ class HomeViewController: UIViewController {
         }
         
         mediaNavBar.moreButtonAction = {
-            let jumpToVC = JumpToViewController()
-            jumpToVC.urlString = "http://www.zzuli.edu.cn/_t2404/225/list.htm"
-            self.navigationController?.pushViewController(jumpToVC, animated: true)
+            print("媒体轻大更多按钮被点击")
         }
     }
     
@@ -263,9 +257,7 @@ class HomeViewController: UIViewController {
         }
         
         scienceNavBar.moreButtonAction = {
-            let jumpToVC = JumpToViewController()
-            jumpToVC.urlString = "http://www.zzuli.edu.cn/_t2404/284/list.htm"
-            self.navigationController?.pushViewController(jumpToVC, animated: true)
+            print("科学研究更多按钮被点击")
         }
     }
     
@@ -449,4 +441,6 @@ class HomeViewController: UIViewController {
             isNavTableViewVisible = true
         }
     }
+    
+    
 }

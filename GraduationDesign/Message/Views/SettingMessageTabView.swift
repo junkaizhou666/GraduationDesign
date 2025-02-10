@@ -39,6 +39,10 @@ class SettingMessageTableView: UIView {
             make.height.equalTo(600)
         }
     }
+    
+    public func reloadData() {
+        tableView.reloadData()
+    }
 }
 
 extension SettingMessageTableView: UITableViewDelegate, UITableViewDataSource {

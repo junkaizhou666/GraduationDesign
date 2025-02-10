@@ -12,8 +12,10 @@ class MessageViewController: UIViewController {
     
     private var statusBarView: UIView!
     private var customNavBar: CustomNavigationBar!
+    private var scrollView: UIScrollView!
     private var buttonStackView: MessageButtonStack!
-    private var informationVC: InformationViewController!
+    private var threeButtonVC: ThreeButtonViewController!
+    private var twoButtonVC: TwoButtonViewController!
     private var topBackgroundView: UIView!
     
     override func viewDidLoad() {
@@ -21,8 +23,10 @@ class MessageViewController: UIViewController {
         
         setupStatusBar()
         setupNavBar()
+        setupScrollView()
         setupButtonStackView()
-        setupInformationVC()
+        setupThreeButtonVC()
+        setupTwoButtonVC()
     }
     
     private func setupStatusBar() {
@@ -53,27 +57,60 @@ class MessageViewController: UIViewController {
         }
     }
     
+    private func setupScrollView() {
+        scrollView = UIScrollView()
+        scrollView.isUserInteractionEnabled = true
+        scrollView.isScrollEnabled = true
+        scrollView.alwaysBounceVertical = true
+        scrollView.backgroundColor = .white
+        view.addSubview(scrollView)
+        
+        scrollView.snp.makeConstraints { make in
+            make.top.equalTo(customNavBar.snp.bottom)
+            make.left.right.bottom.equalToSuperview()
+        }
+    }
+    
     private func setupButtonStackView() {
         let buttonModel = ButtonModel()
         self.buttonStackView = MessageButtonStack(buttons: buttonModel.buttonModel)
         
-        view.addSubview(buttonStackView)
+        scrollView.addSubview(buttonStackView)
         buttonStackView.snp.makeConstraints { make in
-            make.top.equalTo(customNavBar.snp.bottom)
-            make.left.right.equalToSuperview()
+            make.top.equalTo(scrollView.snp.top)
+            make.left.equalTo(scrollView.snp.left)
+            make.right.equalTo(scrollView.snp.right)
+            make.width.equalTo(scrollView.snp.width)
             make.height.equalTo(100)
         }
     }
     
-    private func setupInformationVC() {
-        informationVC = InformationViewController()
-        addChild(informationVC)
-        view.addSubview(informationVC.view)
-        informationVC.didMove(toParent: self)
-        informationVC.view.snp.makeConstraints { make in
+    private func setupThreeButtonVC() {
+        threeButtonVC = ThreeButtonViewController()
+        addChild(threeButtonVC)
+        scrollView.addSubview(threeButtonVC.view)
+        threeButtonVC.didMove(toParent: self)
+        threeButtonVC.view.snp.makeConstraints { make in
             make.top.equalTo(buttonStackView.snp.bottom)
-            make.left.right.equalToSuperview()
-            make.height.equalTo(400)
+            make.left.equalTo(scrollView.snp.left)
+            make.right.equalTo(scrollView.snp.right)
+            make.width.equalTo(scrollView.snp.width)
+            make.height.equalTo(360)
+        }
+    }
+    
+    private func setupTwoButtonVC() {
+        twoButtonVC = TwoButtonViewController()
+        addChild(twoButtonVC)
+        scrollView.addSubview(twoButtonVC.view)
+        twoButtonVC.didMove(toParent: self)
+        twoButtonVC.view.snp.makeConstraints { make in
+            make.top.equalTo(threeButtonVC.view.snp.bottom)
+            make.left.equalTo(scrollView.snp.left)
+            make.right.equalTo(scrollView.snp.right)
+            make.width.equalTo(scrollView.snp.width)
+            make.height.equalTo(360)
+            make.bottom.equalTo(scrollView.snp.bottom)
         }
     }
 }

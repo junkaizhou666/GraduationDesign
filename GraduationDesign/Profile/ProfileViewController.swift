@@ -8,18 +8,34 @@
 import UIKit
 import SnapKit
 
-class ProfileViewController: UIViewController {
+class ProfileViewController: UIViewController{
+    
     private var statusBarView: UIView!
     private var customNavBar: CustomNavigationBar!
+    private var scrollView: UIScrollView!
     private var buttonStackView: ButtonStackView!
     private var headView: HeadView!
+    private var contentStackView: UIStackView!
+    private var searchBar: SearchBarViewControllers!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupStatusBar()
         setupNavBar()
+        setupScrollView()
         setupHeadView()
+        setupSearchBar()
+        setupContentStackView()
+        setupSection(labelTitle: "我的收藏", buttons: MyCollection().myCollection)
+        setupSection(labelTitle: "最新上线", buttons: LatestRelease().latestRelease)
+        setupSection(labelTitle: "一站学工", buttons: StudentsWork().studentsWork)
+        setupSection(labelTitle: "在线学习", buttons: OnlineLearning().onlineLearning)
+        setupSection(labelTitle: "网络信息服务申请", buttons: NetWorkInformation().networkInformation)
+        setupSection(labelTitle: "校园生活", buttons: CampusLife().campusLife)
+        setupSection(labelTitle: "我的信息", buttons: MyInformation().myInformation)
+        setupSection(labelTitle: "免登陆使用", buttons: NoLoginRequired().nologinRequired)
+        setupSection(labelTitle: "版本信息", buttons: VersionInformation().versionInformation)
     }
     
     private func setupStatusBar() {
@@ -42,7 +58,6 @@ class ProfileViewController: UIViewController {
             print("设置按钮点击")
         }
         customNavBar.setRightButtonTitle("消息", titleColor: .white) {
-            // 右侧按钮点击事件
             print("消息按钮点击")
         }
         view.addSubview(customNavBar)
@@ -52,13 +67,62 @@ class ProfileViewController: UIViewController {
         }
     }
     
-    private func setupHeadView() {
-        headView = HeadView()
-        view.addSubview(headView)
-        headView.snp.makeConstraints { make in
+    private func setupScrollView() {
+        scrollView = UIScrollView()
+        scrollView.isUserInteractionEnabled = true
+        scrollView.isScrollEnabled = true
+        scrollView.alwaysBounceVertical = true
+        scrollView.backgroundColor = .white
+        view.addSubview(scrollView)
+        
+        scrollView.snp.makeConstraints { make in
             make.top.equalTo(customNavBar.snp.bottom)
             make.left.right.equalToSuperview()
+            make.bottom.equalToSuperview()
+        }
+    }
+    
+    private func setupHeadView() {
+        headView = HeadView()
+        scrollView.addSubview(headView)
+        headView.snp.makeConstraints { make in
+            make.top.equalTo(scrollView.snp.top).offset(-13)
+            make.left.equalTo(scrollView.snp.left)
+            make.right.equalTo(scrollView.snp.right)
+            make.width.equalTo(scrollView.snp.width)
             make.height.equalTo(80)
         }
+    }
+
+    private func setupSearchBar() {
+        searchBar = SearchBarViewControllers()
+        addChild(searchBar)
+        scrollView.addSubview(searchBar.view)
+        searchBar.view.snp.makeConstraints { make in
+            make.top.equalTo(headView.snp.bottom).offset(10)
+            make.left.equalTo(scrollView.snp.left)
+            make.right.equalTo(scrollView.snp.right)
+            make.height.equalTo(30)
+        }
+    }
+
+    private func setupContentStackView() {
+        contentStackView = UIStackView()
+        contentStackView.axis = .vertical
+        contentStackView.spacing = 10
+        scrollView.addSubview(contentStackView)
+        
+        contentStackView.snp.makeConstraints { make in
+            make.top.equalTo(searchBar.view.snp.bottom)
+            make.left.equalTo(scrollView.snp.left)
+            make.right.equalTo(scrollView.snp.right)
+            make.width.equalTo(scrollView.snp.width)
+            make.bottom.equalTo(scrollView.snp.bottom)
+        }
+    }
+    
+    private func setupSection(labelTitle: String, buttons: ButtonStackStruct) {
+        let sectionStackView = ButtonStackView(buttons: buttons, labelTitle: labelTitle)
+        contentStackView.addArrangedSubview(sectionStackView)
     }
 }

@@ -95,7 +95,8 @@ class ButtonStackView: UIView {
     private func setupConstraints() {
         // mainView 的布局
         mainView.snp.makeConstraints { make in
-            make.top.left.right.equalToSuperview()
+            make.top.equalToSuperview().offset(10)
+            make.left.right.equalToSuperview()
             make.height.equalTo(40)
         }
         
@@ -107,7 +108,7 @@ class ButtonStackView: UIView {
         
         // sepatatorView 的布局
         separatorView.snp.makeConstraints { make in
-            make.top.equalTo(buttonStack.snp.bottom)
+            make.top.equalTo(buttonStack.snp.bottom).offset(10)
             make.left.right.equalToSuperview()
             make.height.equalTo(10)
         }

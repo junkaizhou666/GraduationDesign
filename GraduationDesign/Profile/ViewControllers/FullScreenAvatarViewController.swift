@@ -6,38 +6,38 @@
 //
 
 import UIKit
+import SnapKit
 
-class FullScreenAvatarViewController: UIViewController {
+class FullScreenAvatarView: UIView {
     
-    private let avatarImageView: UIImageView
+    private let avatarImageView: UIImageView = UIImageView()
 
     init(image: UIImage) {
-        self.avatarImageView = UIImageView(image: image)
-        super.init(nibName: nil, bundle: nil)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .black
+        super.init(frame: .zero)
+        self.backgroundColor = .black
         
-        // 设置图片为全屏
+        avatarImageView.image = image
         avatarImageView.contentMode = .scaleAspectFit
-        view.addSubview(avatarImageView)
+        avatarImageView.isUserInteractionEnabled = true
+        
+        addSubview(avatarImageView)
         avatarImageView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
 
-        // 添加点击手势返回
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissFullScreen))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissView))
         avatarImageView.addGestureRecognizer(tapGesture)
-        avatarImageView.isUserInteractionEnabled = true
     }
 
-    @objc private func dismissFullScreen() {
-        dismiss(animated: true, completion: nil)
+    @objc func dismissView() {
+        UIView.animate(withDuration: 0.25, animations: {
+            self.alpha = 0
+        }) { _ in
+            self.removeFromSuperview()
+        }
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

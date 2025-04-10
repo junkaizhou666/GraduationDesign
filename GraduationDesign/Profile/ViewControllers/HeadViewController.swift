@@ -10,7 +10,8 @@ import SnapKit
 import SDWebImage
 
 class HeadViewController: UIViewController, UINavigationControllerDelegate {
-    private var avatarVC = AvatarViewController()
+    private var avatarView = AvatarView()
+    private lazy var presenter = AvatarPresenter(view: self)
     var nameLabel = UILabel()
     var collegeLabel = UILabel()
     var informationButton = UIButton()
@@ -25,25 +26,23 @@ class HeadViewController: UIViewController, UINavigationControllerDelegate {
     private func setupViews() {
         self.view.backgroundColor = UIColor(named: "NavBar")
         
-        addChild(avatarVC)
-        avatarVC.view.layer.cornerRadius = 40
-        avatarVC.view.clipsToBounds = true
-        view.addSubview(avatarVC.view)
-        avatarVC.didMove(toParent: self)
-
+        avatarView.delegate = self
+        avatarView.layer.cornerRadius = 40
+        avatarView.clipsToBounds = true
+        view.addSubview(avatarView)
         view.addSubview(nameLabel)
         view.addSubview(collegeLabel)
         view.addSubview(informationButton)
         view.addSubview(certificateButton)
         
-        avatarVC.view.snp.makeConstraints { make in
+        avatarView.snp.makeConstraints { make in
             make.top.left.equalToSuperview().offset(10)
             make.width.height.equalTo(80)
         }
         
         nameLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(25)
-            make.left.equalTo(avatarVC.view.snp.right).offset(20)
+            make.left.equalTo(avatarView.snp.right).offset(20)
         }
         nameLabel.text = "周俊凯"
         nameLabel.font = UIFont.boldSystemFont(ofSize: 16)
@@ -51,7 +50,7 @@ class HeadViewController: UIViewController, UINavigationControllerDelegate {
         
         collegeLabel.snp.makeConstraints { make in
             make.top.equalTo(nameLabel.snp.bottom).offset(20)
-            make.left.equalTo(avatarVC.view.snp.right).offset(20)
+            make.left.equalTo(avatarView.snp.right).offset(20)
         }
         collegeLabel.text = "软件学院"
         collegeLabel.font = UIFont.boldSystemFont(ofSize: 16)
@@ -75,4 +74,35 @@ class HeadViewController: UIViewController, UINavigationControllerDelegate {
         certificateButton.setTitle("证件", for: .normal)
         certificateButton.setTitleColor(.white, for: .normal)
     }
+}
+
+extension HeadViewController: AvatarViewDelegate {
+    func avatarViewDidTapViewAvatar() {
+        presenter.didTapViewAvatar()
+    }
+
+    func avatarViewDidTapChooseFromAlbum() {
+        presenter.didTapChooseFromAlbum(vc: self)
+    }
+}
+
+extension HeadViewController: AvatarViewProtocol {
+    func showAvatar(image: UIImage) {
+        avatarView.updateAvatar(image: image)
+    }
+
+    func showError(_ message: String) {
+        let alert = UIAlertController(title: "错误", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "确定", style: .default))
+        present(alert, animated: true)
+    }
+
+    func showFullScreenAvatar(image: UIImage) {
+        let fullScreenView = FullScreenAvatarView(image: image)
+        fullScreenView.frame = UIScreen.main.bounds
+        if let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) {
+            window.addSubview(fullScreenView)
+        }
+    }
+
 }

@@ -1,64 +1,64 @@
 //
-//  HeadView.swift
+//  HeadViewController.swift
 //  GraduationDesign
 //
-//  Created by 周俊凯 on 2024/12/9.
+//  Created by 周俊凯 on 2025/4/5.
 //
 
 import UIKit
 import SnapKit
+import SDWebImage
 
-class HeadView: UIView {
-    var image = UIImageView()
+class HeadViewController: UIViewController, UINavigationControllerDelegate {
+    private var avatarVC = AvatarViewController()
     var nameLabel = UILabel()
     var collegeLabel = UILabel()
     var informationButton = UIButton()
     var certificateButton = UIButton()
+    var imagePickerController: UIImagePickerController?
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override func viewDidLoad() {
+        super.viewDidLoad()
         setupViews()
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     private func setupViews() {
-        self.backgroundColor = UIColor(named: "NavBar")
+        self.view.backgroundColor = UIColor(named: "NavBar")
         
-        addSubview(image)
-        addSubview(nameLabel)
-        addSubview(collegeLabel)
-        addSubview(informationButton)
-        addSubview(certificateButton)
+        addChild(avatarVC)
+        avatarVC.view.layer.cornerRadius = 40
+        avatarVC.view.clipsToBounds = true
+        view.addSubview(avatarVC.view)
+        avatarVC.didMove(toParent: self)
+
+        view.addSubview(nameLabel)
+        view.addSubview(collegeLabel)
+        view.addSubview(informationButton)
+        view.addSubview(certificateButton)
         
-        image.snp.makeConstraints { make in
+        avatarVC.view.snp.makeConstraints { make in
             make.top.left.equalToSuperview().offset(10)
-            make.size.equalTo(CGSize(width: 60, height: 60))
+            make.width.height.equalTo(80)
         }
-        image.layer.cornerRadius = 30
-        image.clipsToBounds = true
-        image.image = UIImage(named: "avatar")
         
         nameLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(15)
-            make.left.equalTo(image.snp.right).offset(20)
+            make.top.equalToSuperview().offset(25)
+            make.left.equalTo(avatarVC.view.snp.right).offset(20)
         }
         nameLabel.text = "周俊凯"
         nameLabel.font = UIFont.boldSystemFont(ofSize: 16)
         nameLabel.textColor = .white
         
         collegeLabel.snp.makeConstraints { make in
-            make.top.equalTo(nameLabel.snp.bottom).offset(10)
-            make.left.equalTo(image.snp.right).offset(20)
+            make.top.equalTo(nameLabel.snp.bottom).offset(20)
+            make.left.equalTo(avatarVC.view.snp.right).offset(20)
         }
         collegeLabel.text = "软件学院"
         collegeLabel.font = UIFont.boldSystemFont(ofSize: 16)
         collegeLabel.textColor = .white
         
         informationButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(20)
+            make.top.equalToSuperview().offset(40)
             make.right.equalTo(certificateButton.snp.left).offset(-5)
             make.height.equalTo(30)
             make.width.equalTo(50)
@@ -67,7 +67,7 @@ class HeadView: UIView {
         informationButton.setTitleColor(.white, for: .normal)
         
         certificateButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(20)
+            make.top.equalToSuperview().offset(40)
             make.right.equalToSuperview().offset(-10)
             make.height.equalTo(30)
             make.width.equalTo(50)

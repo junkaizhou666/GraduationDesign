@@ -14,7 +14,7 @@ class ProfileViewController: UIViewController{
     private var customNavBar: CustomNavigationBar!
     private var scrollView: UIScrollView!
     private var buttonStackView: ButtonStackView!
-    private var headView: HeadView!
+    private var headViewController: HeadViewController!
     private var contentStackView: UIStackView!
     private var searchBar: SearchBarViewControllers!
     
@@ -83,14 +83,14 @@ class ProfileViewController: UIViewController{
     }
     
     private func setupHeadView() {
-        headView = HeadView()
-        scrollView.addSubview(headView)
-        headView.snp.makeConstraints { make in
+        headViewController = HeadViewController()
+        scrollView.addSubview(headViewController.view)
+        headViewController.view.snp.makeConstraints { make in
             make.top.equalTo(scrollView.snp.top).offset(-13)
             make.left.equalTo(scrollView.snp.left)
             make.right.equalTo(scrollView.snp.right)
             make.width.equalTo(scrollView.snp.width)
-            make.height.equalTo(80)
+            make.height.equalTo(100)
         }
     }
 
@@ -99,7 +99,7 @@ class ProfileViewController: UIViewController{
         addChild(searchBar)
         scrollView.addSubview(searchBar.view)
         searchBar.view.snp.makeConstraints { make in
-            make.top.equalTo(headView.snp.bottom).offset(10)
+            make.top.equalTo(headViewController.view.snp.bottom).offset(10)
             make.left.equalTo(scrollView.snp.left)
             make.right.equalTo(scrollView.snp.right)
             make.height.equalTo(30)

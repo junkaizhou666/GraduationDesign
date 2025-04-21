@@ -11,15 +11,14 @@ import SnapKit
 class ServiceViewController: UIViewController {
     private var statusBarView: UIView!
     private var customNavBar: CustomNavigationBar!
-    private var collegeTableView: CollegeDropDownMenuView!
-    private var toggleButton: UIButton! // 新增按钮
+    private var contactListVC: ContactListViewController!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupStatusBar()
         setupNavBar()
-        setupCollegeTableView()
+        setupContactListVC()
     }
     
     private func setupStatusBar() {
@@ -50,13 +49,13 @@ class ServiceViewController: UIViewController {
         }
     }
     
-    private func setupCollegeTableView() {
-        collegeTableView = CollegeDropDownMenuView()
-        view.addSubview(collegeTableView)
-        collegeTableView.snp.makeConstraints { make in
+    private func setupContactListVC() {
+        contactListVC = ContactListViewController()
+        view.addSubview(contactListVC.view)
+        contactListVC.view.snp.makeConstraints { make in
             make.top.equalTo(customNavBar.snp.bottom)
             make.left.right.equalToSuperview()
-            make.height.equalTo(2000)
+            make.height.equalTo(5000)
         }
     }
     

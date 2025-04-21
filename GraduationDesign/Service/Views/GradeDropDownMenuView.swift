@@ -36,6 +36,10 @@ class GradeDropDownMenuView: UIView {
             make.edges.equalToSuperview()
         }
     }
+
+    func getClassDropDownView() -> ClassDropDownMenuView {
+        return classDropDownView
+    }
 }
 
 extension GradeDropDownMenuView: UITableViewDelegate, UITableViewDataSource {
@@ -50,10 +54,8 @@ extension GradeDropDownMenuView: UITableViewDelegate, UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: "ClassDropDownCell", for: indexPath)
             cell.selectionStyle = .none
 
-            // 清除旧视图
             cell.contentView.subviews.forEach { $0.removeFromSuperview() }
 
-            // 添加下一级菜单视图
             cell.contentView.addSubview(classDropDownView)
             classDropDownView.snp.makeConstraints { make in
                 make.edges.equalToSuperview()
@@ -63,7 +65,6 @@ extension GradeDropDownMenuView: UITableViewDelegate, UITableViewDataSource {
             return cell
         }
 
-        // 计算真实行数
         var actualRow = indexPath.row
         if let expanded = expandedIndexPath, indexPath.row > expanded.row {
             actualRow -= 1
@@ -80,18 +81,16 @@ extension GradeDropDownMenuView: UITableViewDelegate, UITableViewDataSource {
         tableView.deselectRow(at: indexPath, animated: true)
 
         if let expanded = expandedIndexPath, indexPath.row == expanded.row + 1 {
-            return // 点击的是展开的下拉区域
+            return
         }
 
         tableView.beginUpdates()
 
         if let expanded = expandedIndexPath {
             if expanded.row == indexPath.row {
-                // 收起
                 expandedIndexPath = nil
                 tableView.deleteRows(at: [IndexPath(row: indexPath.row + 1, section: 0)], with: .fade)
             } else {
-                // 切换展开项
                 let oldExpanded = expanded
                 var newIndexPath = indexPath
                 if indexPath.row > oldExpanded.row {
@@ -105,7 +104,6 @@ extension GradeDropDownMenuView: UITableViewDelegate, UITableViewDataSource {
                 tableView.insertRows(at: [IndexPath(row: newIndexPath.row + 1, section: 0)], with: .fade)
             }
         } else {
-            // 没有展开项，添加新行
             expandedIndexPath = indexPath
             tableView.insertRows(at: [IndexPath(row: indexPath.row + 1, section: 0)], with: .fade)
         }

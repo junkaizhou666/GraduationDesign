@@ -48,34 +48,37 @@ extension CollegeDropDownMenuView: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        // 判断是否是插入的 grade cell
         if let expanded = expandedIndexPath, indexPath.row == expanded.row + 1 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "GradeCell", for: indexPath)
             cell.selectionStyle = .none
-            
-            // 清除旧视图
+
             cell.contentView.subviews.forEach { $0.removeFromSuperview() }
-            
-            // 添加年级下拉视图
+
             cell.contentView.addSubview(gradeDropDownView)
             gradeDropDownView.setupTableView()
+
+            // 判断班级视图是否展开
+            let classDropDownView = gradeDropDownView.getClassDropDownView()
+            let classHeight = classDropDownView.isExpanded() ? 400 : 0
+            let baseHeight = 175
+
             gradeDropDownView.snp.makeConstraints { make in
                 make.edges.equalToSuperview()
-                make.height.equalTo(175)
+                make.height.equalTo(baseHeight + classHeight)
             }
+
             return cell
         }
-        
-        // 正常学院 cell
+
         var actualRow = indexPath.row
         if let expanded = expandedIndexPath, indexPath.row > expanded.row {
             actualRow -= 1
         }
-        
+
         guard actualRow >= 0 && actualRow < collegeModel.count else {
             return UITableViewCell()
         }
-        
+
         let model = collegeModel[actualRow]
         let cell = tableView.dequeueReusableCell(withIdentifier: "CollegeCell", for: indexPath)
         cell.textLabel?.text = model.title
@@ -85,21 +88,18 @@ extension CollegeDropDownMenuView: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        
-        // 如果点击的是 grade cell，本身不处理
+
         if let expanded = expandedIndexPath, indexPath.row == expanded.row + 1 {
             return
         }
-        
+
         tableView.beginUpdates()
-        
+
         if let expanded = expandedIndexPath {
             if indexPath.row == expanded.row {
-                // 点击同一个 cell，收起
                 expandedIndexPath = nil
                 tableView.deleteRows(at: [IndexPath(row: indexPath.row + 1, section: 0)], with: .fade)
             } else {
-                // 切换展开位置：先删旧的，再插入新的
                 let old = expanded
                 var new = indexPath
                 if indexPath.row > old.row {
@@ -107,16 +107,15 @@ extension CollegeDropDownMenuView: UITableViewDelegate, UITableViewDataSource {
                 }
                 expandedIndexPath = nil
                 tableView.deleteRows(at: [IndexPath(row: old.row + 1, section: 0)], with: .fade)
-                
+
                 expandedIndexPath = new
                 tableView.insertRows(at: [IndexPath(row: new.row + 1, section: 0)], with: .fade)
             }
         } else {
-            // 原本没展开，插入一行
             expandedIndexPath = indexPath
             tableView.insertRows(at: [IndexPath(row: indexPath.row + 1, section: 0)], with: .fade)
         }
-        
+
         tableView.endUpdates()
     }
 }

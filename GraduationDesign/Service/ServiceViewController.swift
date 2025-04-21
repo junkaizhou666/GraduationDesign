@@ -6,16 +6,20 @@
 //
 
 import UIKit
+import SnapKit
 
 class ServiceViewController: UIViewController {
     private var statusBarView: UIView!
     private var customNavBar: CustomNavigationBar!
+    private var collegeTableView: CollegeDropDownMenuView!
+    private var toggleButton: UIButton! // 新增按钮
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupStatusBar()
         setupNavBar()
+        setupCollegeTableView()
     }
     
     private func setupStatusBar() {
@@ -42,8 +46,18 @@ class ServiceViewController: UIViewController {
         customNavBar.snp.makeConstraints { make in
             make.top.equalTo(statusBarView.snp.bottom)
             make.left.right.equalToSuperview()
+            make.height.equalTo(44)
         }
     }
     
+    private func setupCollegeTableView() {
+        collegeTableView = CollegeDropDownMenuView()
+        view.addSubview(collegeTableView)
+        collegeTableView.snp.makeConstraints { make in
+            make.top.equalTo(customNavBar.snp.bottom)
+            make.left.right.equalToSuperview()
+            make.height.equalTo(2000)
+        }
+    }
     
 }

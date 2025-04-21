@@ -35,6 +35,7 @@ class AvatarView: UIView {
     }
 
     private func setupUI() {
+        self.backgroundColor = .white
         addSubview(avatarButton)
         avatarButton.snp.makeConstraints { make in
             make.edges.equalToSuperview()

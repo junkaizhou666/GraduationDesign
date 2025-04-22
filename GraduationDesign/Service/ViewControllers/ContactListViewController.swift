@@ -15,10 +15,15 @@ enum DisplayItem {
     case person(PersonModelStruct)
 }
 
+struct DisplayNode {
+    let item: DisplayItem
+    let level: Int
+}
+
 class ContactListViewController: UIViewController {
-    
+
     private let tableView = UITableView()
-    private var dataSource: [DisplayItem] = []
+    private var dataSource: [DisplayNode] = []
     private var expandedIndexSet: Set<Int> = []
 
     private let collegeModel = CollegeNameModel().collegeNameModel
@@ -39,89 +44,102 @@ class ContactListViewController: UIViewController {
             make.edges.equalToSuperview()
         }
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
+        tableView.register(PersonTableViewCell.self, forCellReuseIdentifier: "PersonCell")
         tableView.dataSource = self
         tableView.delegate = self
         tableView.rowHeight = 60
     }
 
     private func loadInitialData() {
-        dataSource = collegeModel.map { .college($0) }
+        dataSource = collegeModel.map { DisplayNode(item: .college($0), level: 0) }
         tableView.reloadData()
     }
 }
 
+// MARK: - UITableViewDataSource
 extension ContactListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dataSource.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        let item = dataSource[indexPath.row]
-        cell.imageView?.image = nil
-        cell.textLabel?.text = ""
-        cell.detailTextLabel?.text = nil
+        let node = dataSource[indexPath.row]
+        let item = node.item
+        let level = node.level
 
         switch item {
         case .college(let model), .grade(let model), .class(let model):
-            cell.textLabel?.text = model.title
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") ?? UITableViewCell(style: .default, reuseIdentifier: "Cell")
+            var indent = ""
+            for _ in 0..<level {
+                indent += "    "
+            }
+            cell.textLabel?.text = "\(indent)\(model.title)"
             cell.accessoryType = .disclosureIndicator
+            return cell
+
         case .person(let model):
-            cell.textLabel?.text = "           \(model.name)"
-            cell.detailTextLabel?.text = "\(model.position ?? "成员") | \(model.number)"
-            cell.imageView?.image = model.avater
-            cell.accessoryType = .none
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "PersonCell", for: indexPath) as? PersonTableViewCell else {
+                return UITableViewCell()
+            }
+            cell.configure(with: model)
+            return cell
         }
-        return cell
     }
 }
 
+// MARK: - UITableViewDelegate
 extension ContactListViewController: UITableViewDelegate {
-
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let item = dataSource[indexPath.row]
+        let node = dataSource[indexPath.row]
+        let item = node.item
+        let level = node.level
 
-        // 防止重复展开
         if expandedIndexSet.contains(indexPath.row) {
             collapseSubitems(from: indexPath.row)
             return
         }
 
+        var subitems: [DisplayNode] = []
+
         switch item {
         case .college:
-            insertSubitems(at: indexPath.row, items: gradeModel.map { .grade($0) })
+            subitems = gradeModel.map { DisplayNode(item: .grade($0), level: level + 1) }
         case .grade:
-            insertSubitems(at: indexPath.row, items: classModel.map { .class($0) })
+            subitems = classModel.map { DisplayNode(item: .class($0), level: level + 1) }
         case .class:
-            insertSubitems(at: indexPath.row, items: personModel.map { .person($0) })
+            subitems = personModel.map { DisplayNode(item: .person($0), level: level + 1) }
         case .person:
-            break
+            return
         }
+
+        insertSubitems(at: indexPath.row, nodes: subitems)
     }
 
-    private func insertSubitems(at index: Int, items: [DisplayItem]) {
-        dataSource.insert(contentsOf: items, at: index + 1)
+    private func insertSubitems(at index: Int, nodes: [DisplayNode]) {
+        dataSource.insert(contentsOf: nodes, at: index + 1)
         expandedIndexSet.insert(index)
         tableView.reloadData()
     }
 
     private func collapseSubitems(from index: Int) {
-        var deleteCount = 0
-        var i = index + 1
-        while i < dataSource.count {
-            switch dataSource[i] {
-            case .college:
+        let parentLevel = dataSource[index].level
+        var removeRange = index + 1
+
+        while removeRange < dataSource.count {
+            if dataSource[removeRange].level <= parentLevel {
                 break
-            case .grade, .class, .person:
-                deleteCount += 1
-                i += 1
             }
+            removeRange += 1
         }
-        if deleteCount > 0 {
-            dataSource.removeSubrange((index + 1)...(index + deleteCount))
-            expandedIndexSet.remove(index)
-            tableView.reloadData()
+
+        let removingIndices = (index + 1)..<removeRange
+        for i in removingIndices {
+            expandedIndexSet.remove(i)
         }
+
+        dataSource.removeSubrange(index + 1..<removeRange)
+        expandedIndexSet.remove(index)
+        tableView.reloadData()
     }
 }

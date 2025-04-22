@@ -55,7 +55,7 @@ class TabBarViewController: UITabBarController {
         addChildViewController(childViewController: messageVC, title: "综合信息")
         
         let serviceVC = ServiceViewController()
-        addChildViewController(childViewController: serviceVC, title: "应用服务")
+        addChildViewController(childViewController: serviceVC, title: "通讯录")
         
         let profileVC = ProfileViewController()
         addChildViewController(childViewController: profileVC, title: "个人中心")
